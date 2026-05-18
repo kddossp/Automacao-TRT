@@ -12,7 +12,7 @@ def gerar_documento(dados):
         "{data_seis}": dados['data_seis']
     }
 
-    arquivo = "modelos/servente_engpro/TRT_COMPLETO.docx"
+    arquivo = f"modelos/{dados['empresa'].lower()}/{dados['funcao'].lower()}/TRT_COMPLETO.docx"
 
     doc = Document(arquivo)
 

@@ -3,8 +3,9 @@ from tkcalendar import Calendar
 from main import gerar_documento
 
 def abrir_gerados():
-    import os
-    os.startfile(os.path.join(os.path.dirname(__file__), "gerados"))
+    import os, sys
+    base = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__))
+    os.startfile(os.path.join(base, "gerados"))
 
 def ao_clicar_botao():
     from datetime import datetime
@@ -121,6 +122,19 @@ def focus_out(event, campo, texto_sombra):
 def pular(event, proximo_campo):
     proximo_campo.focus_set()
 
+def formatar_cpf(event):
+    texto = cpf.get().replace(".", "").replace("-", "").replace(" ", "")
+    texto = texto[:11]  # limita a 11 dígitos
+    if len(texto) >= 4:
+        texto = texto[:3] + "." + texto[3:]
+    if len(texto) >= 8:
+        texto = texto[:7] + "." + texto[7:]
+    if len(texto) >= 12:
+        texto = texto[:11] + "-" + texto[11:]
+    cpf.delete(0, END)
+    cpf.insert(0, texto)
+    cpf.config(fg="black")
+
 sombra1 = "Digite o nome: "
 nome = Entry(janela, fg="grey")
 nome.place(x="22.5cm", y=380, width=250, height=30)
@@ -158,6 +172,7 @@ nome.bind("<Return>", lambda e: pular(e, cpf))
 cpf.bind("<FocusIn>", lambda e: focus_in(e, cpf, sombra2))
 cpf.bind("FocusOut>", lambda e: focus_out(e, cpf, sombra2))
 cpf.bind("<Return>", lambda e: pular(e, data))
+cpf.bind("<KeyRelease>", formatar_cpf)
 
 data.bind("<FocusIn>", lambda e: focus_in(e, data, sombra3))
 data.bind("<FocusOut>", lambda e: focus_out(e, data, sombra3))
